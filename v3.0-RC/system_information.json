@@ -22,7 +22,10 @@
       "description":
         "GBFS version number to which the feed conforms, according to the versioning framework (added in v1.1).",
       "type": "string",
-      "const": "3.0-RC"
+      "enum": [
+        "3.0-RC",
+        "3.0"
+      ]
     },
     "data": {
       "description": "Response data in the form of name:value pairs.",
@@ -1104,7 +1107,8 @@
             "properties": {
               "text": {
                 "description": "The translated text.",
-                "type": "string"
+                "type": "string",
+                "format": "uri"
               },
               "language": {
                 "description": "IETF BCP 47 language code.",
@@ -1130,7 +1134,8 @@
             "properties": {
               "text": {
                 "description": "The translated text.",
-                "type": "string"
+                "type": "string",
+                "format": "uri"
               },
               "language": {
                 "description": "IETF BCP 47 language code.",
