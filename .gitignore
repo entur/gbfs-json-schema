@@ -79,9 +79,19 @@ fabric.properties
 build/
 
 # Inputs and outputs
-/input/
-/output/
+input/
+output/
 
 # Mac
 */.DS_Store
 .DS_Store
+
+# Node Modules
+models/typescript/node_modules/*
+scripts/node_modules/*
+
+models/java/gbfs-java-model/target/*
+models/java/gbfs-java-model/resources/*
+models/java/rule-factory/target/*
+*.iml
+/target

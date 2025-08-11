@@ -1,0 +1,54 @@
+name: Build and Deploy Java Language Bindings
+
+on:
+  push:
+    branches:
+      - master
+    paths:
+      - "models/java/**"
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    defaults:
+        run:
+          working-directory: ./models/java
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      
+      - name: Load secrets from 1Password
+        id: onepw_secrets
+        uses: 1password/load-secrets-action@v2.0.0
+        with:
+          export-env: true # Export loaded secrets as environment variables
+        env:
+          OP_SERVICE_ACCOUNT_TOKEN: ${{ secrets.OP_SERVICE_ACCOUNT_TOKEN }} # This is required to connect to the vault in our 1Password account.
+          MAVEN_GPG_PRIVATE_KEY: "op://rbiv7rvkkrsdlpcrz3bmv7nmcu/dkkfywvsr3xq6eyeubq6cldaxi/Private Key"
+          MAVEN_GPG_PASSPHRASE: "op://rbiv7rvkkrsdlpcrz3bmv7nmcu/dkkfywvsr3xq6eyeubq6cldaxi/password"
+          MAVEN_USERNAME: "op://rbiv7rvkkrsdlpcrz3bmv7nmcu/4o43n5uyr7zjog6u2y5i3fjzye/username"
+          MAVEN_PASSWORD: "op://rbiv7rvkkrsdlpcrz3bmv7nmcu/4o43n5uyr7zjog6u2y5i3fjzye/credential"
+
+      - name: Set up JDK
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17.0.11'
+          distribution: 'temurin'
+          server-id: ossrh
+          server-username: MAVEN_USERNAME
+          server-password: MAVEN_PASSWORD
+          gpg-private-key:  ${{ env.MAVEN_GPG_PRIVATE_KEY }}
+          gpg-passphrase:  ${{ env.MAVEN_GPG_PASSPHRASE }}
+    
+      - name: Build and package
+        run: |
+          mvn install -pl rule-factory
+
+      - name: Deploy with Maven
+        run: mvn -B clean deploy -pl gbfs-java-model -P release
+        env:
+          MAVEN_GPG_PASSPHRASE: ${{ env.MAVEN_GPG_PASSPHRASE }}
+          MAVEN_USERNAME: ${{ env.MAVEN_USERNAME }}
+          MAVEN_PASSWORD: ${{ env.MAVEN_PASSWORD }}
+          
