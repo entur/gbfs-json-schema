@@ -11,6 +11,8 @@ by Jackson 2 and 3. From version 2.0.0 the model can no longer be used with a Ja
 geometry types carry Jackson 3 (de)serializers, and the v3.x date handling (see below) relies on Jackson 3
 annotations that Jackson 2 silently ignores.
 
+Upgrading from 1.x? See the [migration guide](MIGRATING_TO_2.md).
+
 In order to avoid naming conflicts in generated classes, each feed gets its own package, and all
 classes are prefixed with "GBFS".
 
